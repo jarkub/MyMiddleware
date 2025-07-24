@@ -10,9 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.HttpsPolicy;
 
-using razormy.extensions;
+//namespace Microsoft.AspNetCore.HttpsPolicy;
 
-namespace razormy;
+namespace razormy.MyMiddleware.HttpsPolicy;
 
 /// <summary>
 /// Middleware that redirects non-HTTPS requests to an HTTPS URL.

@@ -1,9 +1,19 @@
-using razormy;
+
+
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Extensions.Options;
+
+using razormy.MyMiddleware.HttpsPolicy;
+using razormy.MyMiddleware.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddHttpsRedirection((HttpsRedirectionOptions options) =>
+{
+    options.HttpsPort = null;
+    options.RedirectStatusCode = -1;
+});
 // Add services to the container.
-builder.Services.AddRazorPages();
+//builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -16,15 +26,16 @@ var app = builder.Build();
 //}
 
 //app.UseHttpsRedirection();
-
-app.UseMyHttpsRedirection();
+app.MyUseHttpsRedirection();
 
 app.UseRouting();
+//app.MyUseRouting();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+
+//app.MapRazorPages()
+//   .WithStaticAssets();
 
 app.Run();
