@@ -14,9 +14,9 @@ namespace razormy.MyMiddleware.Builder;
 /// </summary>
 public static class MyEndpointRoutingApplicationBuilderExtensions
 {
-    private const string EndpointRouteBuilder = "__EndpointRouteBuilder";
-    private const string GlobalEndpointRouteBuilderKey = "__GlobalEndpointRouteBuilder";
-    private const string UseRoutingKey = "__UseRouting";
+    private const string MyEndpointRouteBuilder = "__MyEndpointRouteBuilder";
+    private const string MyGlobalEndpointRouteBuilderKey = "__MyGlobalEndpointRouteBuilder";
+    private const string MyUseRoutingKey = "__MyUseRouting";
 
     /// <summary>
     /// Adds a <see cref="EndpointRoutingMiddleware"/> middleware to the specified <see cref="IApplicationBuilder"/>.
@@ -44,21 +44,21 @@ public static class MyEndpointRoutingApplicationBuilderExtensions
         VerifyRoutingServicesAreRegistered(builder);
 
         IMyEndpointRouteBuilder endpointRouteBuilder;
-        if (builder.Properties.TryGetValue(GlobalEndpointRouteBuilderKey, out var obj))
+        if (builder.Properties.TryGetValue(MyGlobalEndpointRouteBuilderKey, out var obj))
         {
             endpointRouteBuilder = (IMyEndpointRouteBuilder)obj!;
             // Let interested parties know if UseRouting() was called while a global route builder was set
-            builder.Properties[EndpointRouteBuilder] = endpointRouteBuilder;
+            builder.Properties[MyEndpointRouteBuilder] = endpointRouteBuilder;
         }
         else
         {
             endpointRouteBuilder = new MyDefaultEndpointRouteBuilder(builder);
-            builder.Properties[EndpointRouteBuilder] = endpointRouteBuilder;
+            builder.Properties[MyEndpointRouteBuilder] = endpointRouteBuilder;
         }
 
         // Add UseRouting function to properties so that middleware that can't reference UseRouting directly can call UseRouting via this property
         // This is part of the global endpoint route builder concept
-        builder.Properties.TryAdd(UseRoutingKey, (object)MyUseRouting);
+        builder.Properties.TryAdd(MyUseRoutingKey, (object)MyUseRouting);
 
         return builder.UseMiddleware<MyEndpointRoutingMiddleware>(endpointRouteBuilder);
     }
@@ -129,7 +129,7 @@ public static class MyEndpointRoutingApplicationBuilderExtensions
 
     private static void VerifyEndpointRoutingMiddlewareIsRegistered(IApplicationBuilder app, out IMyEndpointRouteBuilder endpointRouteBuilder)
     {
-        if (!app.Properties.TryGetValue(EndpointRouteBuilder, out var obj))
+        if (!app.Properties.TryGetValue(MyEndpointRouteBuilder, out var obj))
         {
             var message =
                 $"{nameof(MyEndpointRoutingMiddleware)} matches endpoints setup by {nameof(MyEndpointMiddleware)} and so must be added to the request " +
